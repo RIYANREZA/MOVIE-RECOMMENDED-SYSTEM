@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+/* Custom fonts from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@theme {
+  --color-netflix-red: #E50914;
+  --color-netflix-black: #0B0B0B;
+  --color-netflix-dark: #141414;
+  --color-netflix-gray: #1c1c1c;
+  --color-netflix-lightGray: #aaaaaa;
+
+  --font-sans: "Outfit", "Inter", sans-serif;
+
+  --shadow-red-glow: 0 0 15px rgba(229, 9, 20, 0.6);
+  --shadow-card-glow: 0 8px 30px rgba(0, 0, 0, 0.6);
+}
+
+body {
+  background-color: #0B0B0B;
+  color: #FFFFFF;
+  font-family: 'Outfit', 'Inter', sans-serif;
+  overflow-x: hidden;
+  margin: 0;
+}
+
+/* Custom Hide Scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Netflix Style Scrollbar */
+.netflix-scrollbar::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+.netflix-scrollbar::-webkit-scrollbar-track {
+  background: #0B0B0B;
+}
+
+.netflix-scrollbar::-webkit-scrollbar-thumb {
+  background: #E50914;
+  border-radius: 3px;
+}
+
+.netflix-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #b80710;
+}
+
+/* Glassmorphism utility */
+.glass {
+  background: rgba(20, 20, 20, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Glow Border & Hover Effects */
+.card-glow-hover {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.card-glow-hover:hover {
+  box-shadow: 0 0 25px rgba(229, 9, 20, 0.5);
+  border-color: rgba(229, 9, 20, 0.6);
+}
+
+/* Text glow */
+.text-glow-red {
+  text-shadow: 0 0 10px rgba(229, 9, 20, 0.8);
+}

@@ -1,0 +1,21 @@
+# Python ML files
+backend_ml/dataset/
+backend_ml/movies.pkl
+backend_ml/similarity.pkl
+__pycache__/
+*.pyc
+
+# Node / Vite files
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.production.local
+frontend/.env.stage.local
+
+# IDE and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

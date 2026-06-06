@@ -1,0 +1,10 @@
+{
+  "name": "movie-recommender-root",
+  "private": true,
+  "scripts": {
+    "heroku-postbuild": "cd frontend && npm ci && npm run build"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
