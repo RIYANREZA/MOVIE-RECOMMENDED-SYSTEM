@@ -7,7 +7,7 @@ __pycache__/
 
 # Node / Vite files
 frontend/node_modules/
-
+g
 frontend/.env
 frontend/.env.local
 frontend/.env.development.local
