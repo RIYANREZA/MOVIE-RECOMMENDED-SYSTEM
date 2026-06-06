@@ -3,6 +3,8 @@ import axios from 'axios';
 import { FaStar } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
+const apiKeyDefault = "27428f023dc42d88df6b89a309eafe9a";
+
 // Mapping of movie genres to beautiful dark gradients for fallback poster generation
 const getGenreGradient = (genres = []) => {
   const primaryGenre = genres[0] || '';
@@ -38,33 +40,53 @@ export default function MovieCard({ movie, apiKey, onClick }) {
   const [posterUrl, setPosterUrl] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const finalApiKey = apiKey || apiKeyDefault;
+
   useEffect(() => {
     let isMounted = true;
-    if (!apiKey) {
+
+    if (!finalApiKey || !movie?.id) {
+      setPosterUrl(null);
+      setLoading(false);
+      return;
+    }
+
+    // 🔥 CRITICAL FIX: sanitize ID
+    const movieId = Number(String(movie.id).trim());
+
+    console.log("Original ID:", movie.id);
+    console.log("Sanitized ID:", movieId);
+
+    if (isNaN(movieId) || movieId <= 0) {
+      console.error("Invalid movie ID:", movie.id);
       setPosterUrl(null);
       setLoading(false);
       return;
     }
 
     setLoading(true);
-    axios.get(`https://api.themoviedb.org/3/movie/${movie.id}?api_key=${apiKey}`)
-      .then(res => {
-        if (isMounted && res.data && res.data.poster_path) {
+
+    axios
+      .get(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${finalApiKey}`)
+      .then((res) => {
+        if (isMounted && res.data?.poster_path) {
           setPosterUrl(`https://image.tmdb.org/t/p/w500${res.data.poster_path}`);
-        }
-        setLoading(false);
-      })
-      .catch(() => {
-        if (isMounted) {
+        } else {
           setPosterUrl(null);
-          setLoading(false);
         }
+      })
+      .catch((err) => {
+        console.error("TMDB error:", err.response?.data || err.message);
+        if (isMounted) setPosterUrl(null);
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
       });
 
     return () => {
       isMounted = false;
     };
-  }, [movie.id, apiKey]);
+  }, [movie?.id, finalApiKey]);
 
   const gradientClass = getGenreGradient(movie.genres);
 
@@ -88,9 +110,7 @@ export default function MovieCard({ movie, apiKey, onClick }) {
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
-          /* Premium Fallback Poster Graphic */
           <div className={`absolute inset-0 bg-gradient-to-br ${gradientClass} p-5 flex flex-col justify-between border-b border-white/10`}>
-            {/* Top decorative elements */}
             <div className="flex justify-between items-start">
               <span className="text-[10px] uppercase font-mono tracking-widest text-netflix-red font-bold">
                 CineMatch ML
@@ -98,7 +118,6 @@ export default function MovieCard({ movie, apiKey, onClick }) {
               <span className="text-[10px] text-gray-400 font-mono">{movie.year !== 'N/A' ? movie.year : ''}</span>
             </div>
 
-            {/* Title & icon */}
             <div className="my-auto text-center px-2">
               <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center mx-auto mb-3 bg-white/5 text-netflix-red font-bold font-sans">
                 C
@@ -108,7 +127,6 @@ export default function MovieCard({ movie, apiKey, onClick }) {
               </h4>
             </div>
 
-            {/* Bottom details */}
             <div className="flex flex-col space-y-1.5 text-left">
               <hr className="border-white/10" />
               <div className="text-[9px] text-gray-400 font-bold uppercase tracking-wider truncate">
@@ -118,20 +136,18 @@ export default function MovieCard({ movie, apiKey, onClick }) {
           </div>
         )}
 
-        {/* Rating Badge Overlay */}
         <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-md text-white px-2.5 py-1 rounded-full text-xs font-bold flex items-center space-x-1 border border-white/10 z-10">
           <FaStar className="text-yellow-400 text-[10px]" />
           <span>{movie.rating.toFixed(1)}</span>
         </div>
       </div>
 
-      {/* Card Info Content */}
       <div className="p-4 flex flex-col flex-grow justify-between bg-netflix-dark">
         <div>
           <h3 className="text-white font-extrabold text-sm md:text-base tracking-wide line-clamp-1 group-hover:text-netflix-red transition-colors duration-200 uppercase">
             {movie.title}
           </h3>
-          
+
           <div className="flex items-center space-x-2 mt-1.5 text-xs text-gray-400 font-medium">
             <span>{movie.year}</span>
             {movie.genres && movie.genres.length > 0 && (
@@ -143,7 +159,6 @@ export default function MovieCard({ movie, apiKey, onClick }) {
           </div>
         </div>
 
-        {/* Tiny tag for genre display */}
         {movie.genres && movie.genres.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-3">
             {movie.genres.slice(0, 2).map((g) => (
